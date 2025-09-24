@@ -23,22 +23,30 @@ jobs:
       run: |
         sudo apt-get install -y wget unzip
         
-    - name: Install Chrome for Testing and ChromeDriver
+    - name: Install Latest Chrome for Testing and ChromeDriver
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget unzip
+        sudo apt-get install -y wget unzip jq
         
-        # Устанавливаем Chrome for Testing (рекомендуемый способ для автоматизации)
-        CHROME_VERSION="140.0.7339.207"
-        wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$CHROME_VERSION/linux64/chrome-linux64.zip"
+        # Получаем последнюю стабильную версию через официальное API
+        LATEST_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json" | jq -r '.channels.Stable.version')
+        
+        echo "Устанавливаем Chrome for Testing версии: $LATEST_VERSION"
+        
+        # Устанавливаем Chrome for Testing
+        wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$LATEST_VERSION/linux64/chrome-linux64.zip"
         unzip -q chrome-linux64.zip -d chrome-for-testing
         sudo mv chrome-for-testing/chrome-linux64 /opt/chrome-for-testing
+        sudo ln -sf /opt/chrome-for-testing/chrome /usr/local/bin/chrome-for-testing
         
         # Устанавливаем соответствующий ChromeDriver
-        wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$CHROME_VERSION/linux64/chromedriver-linux64.zip"
+        wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$LATEST_VERSION/linux64/chromedriver-linux64.zip"
         unzip -q chromedriver-linux64.zip -d chromedriver
         sudo mv chromedriver/chromedriver-linux64/chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
+        
+        # Очистка временных файлов
+        rm -rf chrome-linux64.zip chrome-for-testing chromedriver-linux64.zip chromedriver
         
     - name: Verify installations
       run: |
