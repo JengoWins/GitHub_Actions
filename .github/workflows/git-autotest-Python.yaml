@@ -68,8 +68,6 @@ jobs:
           -v \
           --html=report.html \
           --self-contained-html \
-          --reruns 3 \
-          --reruns-delay 1 \
           --timeout=120
     
         
