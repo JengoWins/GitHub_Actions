@@ -10,7 +10,7 @@ valid_message = "Это тестовое сообщение для провер�
 valid_pass = "Aaaaa12!"
 
 
-def test_successful_form_submission(browser):  # Фикстура 'browser' задается в conftest.py
+def test_negative_form_submission(browser):  # Фикстура 'browser' задается в conftest.py
     # 1. Инициализация и переход на страницу
     contact_page = ContactPage(browser)
     contact_page.go_to_site()
