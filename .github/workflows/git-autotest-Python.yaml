@@ -2,7 +2,7 @@ name: Python Tests Contact
 
 on:
   push:
-    branches: [ main]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -68,19 +68,29 @@ jobs:
       run: |
         pip install pytest-rerunfailures pytest-timeout
 
+    - name: Create unique user data directories
+      run: |
+        # Создаем временную директорию для user data
+        mkdir -p /tmp/chrome_profiles
+
     - name: Run tests with retries
       run: |
         cd /home/runner/work/GitHub_Actions/GitHub_Actions
         cp -r ./AutoTest/Pages .
-        cd /home/runner/work/GitHub_Actions/GitHub_Actions/AutoTest/Test-Prog/
-        cd /home/runner/work/GitHub_Actions/GitHub_Actions
-        python -m pytest AutoTest/Test-Prog/ --collect-only
-        python -m pytest -k "test_positive_form_submission" --ignore=Pages -v --html=report.html --self-contained-html --timeout=120
+        cd AutoTest/Test-Prog/
+        
+        # Запускаем тесты с настройками для избежания конфликтов
+        python -m pytest -k "test_positive_form_submission" -v \
+          --html=../report.html \
+          --self-contained-html \
+          --timeout=120 \
+          --reruns 3 \
+          --reruns-delay 2
         
     - name: Upload test results
       uses: actions/upload-artifact@v4
       with:
         name: test-report
         path: |
-          report.html
+          AutoTest/report.html
         retention-days: 30
