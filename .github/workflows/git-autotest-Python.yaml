@@ -75,7 +75,7 @@ jobs:
         cd /home/runner/work/GitHub_Actions/GitHub_Actions/AutoTest/Test-Prog/
         cd /home/runner/work/GitHub_Actions/GitHub_Actions
         python -m pytest AutoTest/Test-Prog/ --collect-only
-        python -m pytest -k "test_positive_form_submission" -v --html=report.html --self-contained-html --timeout=120
+        python -m pytest -k "test_positive_form_submission" --ignore=Pages -v --html=report.html --self-contained-html --timeout=120
         
     - name: Upload test results
       uses: actions/upload-artifact@v4
