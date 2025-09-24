@@ -10,6 +10,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
+    strategy:
+      matrix:
+        # Запускаем тесты в несколько потоков с разными портами
+        port: [9222, 9223, 9224, 9225]
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -54,8 +59,14 @@ jobs:
         /opt/chrome-for-testing/chrome --version
         echo "=== ChromeDriver ==="
         chromedriver --version
-        echo "=== ChromeDriver Path ==="
-        which chromedriver
+        
+    - name: Create unique Chrome profiles
+      run: |
+        # Создаем уникальные директории для профилей Chrome
+        mkdir -p /tmp/chrome_profiles
+        for i in 1 2 3 4; do
+          mkdir -p /tmp/chrome_profiles/profile_$i
+        done
         
     - name: Install Python dependencies
       run: |
@@ -63,34 +74,39 @@ jobs:
         pip install -r AutoTest/requirements.txt
         pip install pytest pytest-html
         pip install pytest-xdist
-
-    - name: Install stability packages
-      run: |
         pip install pytest-rerunfailures pytest-timeout
 
-    - name: Create unique user data directories
+    - name: Set environment variables for Chrome
       run: |
-        # Создаем временную директорию для user data
-        mkdir -p /tmp/chrome_profiles
-
-    - name: Run tests with retries
+        # Устанавливаем переменные окружения для Chrome
+        echo "CHROME_USER_DATA_DIR=/tmp/chrome_profiles/profile_${{ strategy.matix.port }}" >> $GITHUB_ENV
+        echo "REMOTE_DEBUGGING_PORT=${{ matrix.port }}" >> $GITHUB_ENV
+        
+    - name: Run tests with isolated Chrome instances
       run: |
         cd /home/runner/work/GitHub_Actions/GitHub_Actions
-        cp -r ./AutoTest/Pages .
-        cd AutoTest/Test-Prog/
         
-        # Запускаем тесты с настройками для избежания конфликтов
-        python -m pytest -k "test_positive_form_submission" -v \
-          --html=../report.html \
+        # Копируем необходимые файлы
+        cp -r ./AutoTest/Pages .
+        
+        # Запускаем тесты с изоляцией через xdist
+        python -m pytest AutoTest/Test-Prog/ -k "test_positive_form_submission" -v \
+          --html=report.html \
           --self-contained-html \
-          --timeout=3600 \
-          --reruns 3 \
-          --reruns-delay 2
+          --timeout=120 \
+          --reruns 2 \
+          --reruns-delay 1 \
+          -n 1  # Запускаем в одном процессе для изоляции
+        
+    - name: Cleanup Chrome profiles
+      run: |
+        # Очищаем временные профили
+        rm -rf /tmp/chrome_profiles
         
     - name: Upload test results
       uses: actions/upload-artifact@v4
       with:
-        name: test-report
+        name: test-report-${{ matrix.port }}
         path: |
-          AutoTest/report.html
+          report.html
         retention-days: 30
