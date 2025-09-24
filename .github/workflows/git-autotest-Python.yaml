@@ -60,7 +60,7 @@ jobs:
       run: |
         cd /home/runner/work/GitHub_Actions/GitHub_Actions
         cp -r ./AutoTest/Pages .
-        python -m pytest AutoTest/Test-Prog/ -v --html=report.html --self-contained-html
+        python -m pytest AutoTest/Test-Prog/ -v --html=report.html --self-contained-html -n 1
     
         
     - name: Upload test results
