@@ -57,6 +57,7 @@ jobs:
         
     - name: Run Selenium tests
       run: |
+        cd /home/runner/work/GitHub_Actions/GitHub_Actions
         python -m pytest AutoTest/Test-Prog/ -v --html=report.html --self-contained-html
     
         
