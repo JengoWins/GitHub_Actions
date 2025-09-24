@@ -30,4 +30,5 @@ def test_negative_submission(browser):
     errors = contact_page.get_error_messages()
 
     assert not contact_page.is_success_message_displayed(), "Неожиданно появилось сообщение об успехе при ошибке валидации"
-    assert len(errors) > 0, "Ожидались сообщения об ошибках, но их нет" # Проверяем, что хотя бы в одном сообщении об ошибке есть ключевое слово
+    if len(errors) == 0:
+        raise AssertionError("Ожидались сообщения об ошибках, но их нет") # Проверяем, что хотя бы в одном сообщении об ошибке есть ключевое слово
