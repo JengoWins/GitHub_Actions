@@ -11,7 +11,6 @@ class ContactPage(BasePage):
     PHONE_INPUT = (By.ID, "phone")
     MESSAGE_TEXTAREA = (By.ID, "textarea")
     SUCCESS_ALERT = (By.ID, "complete")
-    ERROR_MESSAGES = (By.CLASS_NAME, "-error")
 
     # МЕТОДЫ ВЗАИМОДЕЙСТВИЯ
     def enter_name(self, name):
@@ -41,9 +40,25 @@ class ContactPage(BasePage):
         return False
 
     def get_error_messages(self):
-        """Возвращает список текстов всех ошибок валидации на странице"""
-        error_elements = self.driver.find_elements(*self.ERROR_MESSAGES)
-        return [error.text for error in error_elements if error.is_displayed()]
+        possible_selectors = [
+            (By.CLASS_NAME, "error"),
+            (By.CLASS_NAME, "invalid"),
+            (By.CSS_SELECTOR, "[class*='error']"),
+            (By.CSS_SELECTOR, "[class*='invalid']"),
+            (By.CSS_SELECTOR, ".text-red, .text-danger"),
+            (By.XPATH, "//*[contains(@class, 'error')]"),
+            (By.XPATH, "//*[contains(@class, 'invalid')]"),
+        ]
+        errors = []
+        for by, selector in possible_selectors:
+            try:
+                elements = self.driver.find_elements(by, selector)
+                for elem in elements:
+                    if elem.is_displayed() and elem.text.strip():
+                        errors.append(elem.text)
+            except:
+                continue
+        return errors
 
     # УНИВЕРСАЛЬНЫЙ МЕТОД ДЛЯ ПОЗИТИВНОГО ТЕСТА
     def fill_form_and_submit(self, name, email, message, password, phone=None, ):
