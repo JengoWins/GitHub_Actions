@@ -72,7 +72,7 @@ jobs:
       run: |
         cd /home/runner/work/GitHub_Actions/GitHub_Actions
         cp -r ./AutoTest/Pages .
-        python -m pytest AutoTest/Test-Prog/test_Negative.py \
+        python -m pytest AutoTest/Test-Prog/test_Positive.py \
           -v \
           --html=report.html \
           --self-contained-html \
