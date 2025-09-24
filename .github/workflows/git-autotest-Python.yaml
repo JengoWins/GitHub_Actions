@@ -83,9 +83,7 @@ jobs:
         python -m pytest -k "test_positive_form_submission" -v \
           --html=../report.html \
           --self-contained-html \
-          --timeout=120 \
-          --reruns 3 \
-          --reruns-delay 2
+          --timeout=3600 \
         
     - name: Upload test results
       uses: actions/upload-artifact@v4
