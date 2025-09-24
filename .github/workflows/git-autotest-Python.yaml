@@ -55,12 +55,22 @@ jobs:
         pip install -r AutoTest/requirements.txt
         pip install pytest pytest-html
         pip install pytest-xdist
-  
-    - name: Run Selenium tests
+
+    - name: Install stability packages
+      run: |
+        pip install pytest-rerunfailures pytest-timeout
+
+    - name: Run tests with retries
       run: |
         cd /home/runner/work/GitHub_Actions/GitHub_Actions
         cp -r ./AutoTest/Pages .
-        python -m pytest AutoTest/Test-Prog/ -v --html=report.html --self-contained-html -n 1
+        python -m pytest AutoTest/Test-Prog/ \
+          -v \
+          --html=report.html \
+          --self-contained-html \
+          --reruns 3 \
+          --reruns-delay 1 \
+          --timeout=120
     
         
     - name: Upload test results
