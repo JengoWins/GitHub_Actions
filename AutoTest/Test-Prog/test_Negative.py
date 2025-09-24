@@ -19,7 +19,7 @@ valid_message = "Это тестовое сообщение для провер�
 valid_pass = "234sf"
 
 
-def test_submission_with_empty_required_field(browser):
+def test_negative_submission(browser):
     # 1. Инициализация и переход на страницу
     contact_page = ContactPage(browser)
     contact_page.go_to_site()
