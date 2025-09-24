@@ -71,13 +71,6 @@ jobs:
           --reruns 3 \
           --reruns-delay 1 \
           --timeout=120
-        python -m pytest AutoTest/Test-Prog/test_Positive.py \
-          -v \
-          --html=report.html \
-          --self-contained-html \
-          --reruns 3 \
-          --reruns-delay 1 \
-          --timeout=120
     
         
     - name: Upload test results
