@@ -84,6 +84,8 @@ jobs:
           --html=../report.html \
           --self-contained-html \
           --timeout=3600 \
+          --reruns 3 \
+          --reruns-delay 2
         
     - name: Upload test results
       uses: actions/upload-artifact@v4
