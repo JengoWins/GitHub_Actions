@@ -70,9 +70,8 @@ jobs:
 
     - name: Run tests with retries
       run: |
-        cd /home/runner/work/GitHub_Actions/GitHub_Actions
-        cp -r ./AutoTest/Pages .
         cd /home/runner/work/GitHub_Actions/GitHub_Actions/AutoTest/Test-Prog/
+        cp -r /home/runner/work/GitHub_Actions/GitHub_Actions/AutoTest/Pages .
         python -m pytest -k "test_positive_form_submission" --ignore=Pages -v --html=report.html --self-contained-html --timeout=1200
         
     - name: Upload test results
