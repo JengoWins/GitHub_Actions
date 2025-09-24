@@ -1,4 +1,9 @@
 import pytest
+import os
+import sys
+
+# Добавляем путь к Pages
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from Pages.conftest import browser
 from Pages.ContactPage import ContactPage
 
