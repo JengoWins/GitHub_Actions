@@ -74,8 +74,8 @@ jobs:
         cp -r /home/runner/work/GitHub_Actions/GitHub_Actions/AutoTest/Pages .
         cp -r /home/runner/work/GitHub_Actions/GitHub_Actions/AutoTest/Lab3AutoReg .
         #python -m pytest -k "test_positive_form_submission" --ignore=Pages -v --html=report.html --self-contained-html --timeout=1200
-        python -m pytest test_Negative.py -v --html=report.html --self-contained-html
         python -m pytest test_Positive.py -v --html=report.html --self-contained-html
+        python -m pytest test_Negative.py -v --html=report.html --self-contained-html
         
     - name: Upload test results
       uses: actions/upload-artifact@v4
