@@ -23,33 +23,30 @@ jobs:
       run: |
         sudo apt-get install -y wget unzip
         
-    - name: Install Chrome Browser
+    - name: Install Chrome for Testing and ChromeDriver
       run: |
-        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
         sudo apt-get update
-        sudo apt-get install -y google-chrome-stable
+        sudo apt-get install -y wget unzip
         
-    - name: Get Chrome version
-      id: chrome-version
-      run: |
-        CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
-        echo "version=$CHROME_VERSION" >> $GITHUB_OUTPUT
+        # Устанавливаем Chrome for Testing (рекомендуемый способ для автоматизации)
+        CHROME_VERSION="140.0.7339.207"
+        wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$CHROME_VERSION/linux64/chrome-linux64.zip"
+        unzip -q chrome-linux64.zip -d chrome-for-testing
+        sudo mv chrome-for-testing/chrome-linux64 /opt/chrome-for-testing
         
-    - name: Install ChromeDriver
-      run: |
-        CHROME_VERSION=${{ steps.chrome-version.outputs.version }}
-        CHROME_MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d'.' -f1)
-        CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAJOR_VERSION")
-        wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
-        unzip chromedriver_linux64.zip
-        sudo mv chromedriver /usr/local/bin/chromedriver
+        # Устанавливаем соответствующий ChromeDriver
+        wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$CHROME_VERSION/linux64/chromedriver-linux64.zip"
+        unzip -q chromedriver-linux64.zip -d chromedriver
+        sudo mv chromedriver/chromedriver-linux64/chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
         
     - name: Verify installations
       run: |
-        google-chrome --version
+        echo "=== Chrome for Testing ==="
+        /opt/chrome-for-testing/chrome --version
+        echo "=== ChromeDriver ==="
         chromedriver --version
+        echo "=== ChromeDriver Path ==="
         which chromedriver
         
     - name: Install Python dependencies
