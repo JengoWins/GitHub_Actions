@@ -94,8 +94,6 @@ jobs:
           --html=report.html \
           --self-contained-html \
           --timeout=120 \
-          --reruns 2 \
-          --reruns-delay 1 \
           -n 1  # Запускаем в одном процессе для изоляции
         
     - name: Cleanup Chrome profiles
