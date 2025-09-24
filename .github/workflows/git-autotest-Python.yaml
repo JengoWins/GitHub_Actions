@@ -52,12 +52,12 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r AutoTest/requirements.txt
         pip install pytest pytest-html
         
     - name: Run Selenium tests
       run: |
-        python -m pytest Test-Prog/ -v --html=report.html --self-contained-html
+        python -m pytest AutoTest/Test-Prog/ -v --html=report.html --self-contained-html
         
     - name: Upload test results
       uses: actions/upload-artifact@v4
