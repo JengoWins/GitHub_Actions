@@ -16,7 +16,7 @@ def browser():
     chrome_options.add_argument("--start-maximized")  # Максимизировать окно
     chrome_options.add_argument("--disable-notifications")  # Отключить уведомления
     chrome_options.add_argument("--disable-extensions")  # Отключить расширения
-    #chrome_options.add_argument("--headless")  # Раскомментировать для безголового режима
+    chrome_options.add_argument("--headless")  # Раскомментировать для безголового режима
 
     # Инициализация драйвера
     driver = webdriver.Chrome(
