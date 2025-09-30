@@ -1,5 +1,4 @@
 name: Python Tests Contact
-
 on:
   push:
     branches: [ main]
@@ -18,45 +17,27 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    
-    - name: Install system dependencies
-      run: |
-        sudo apt-get install -y wget unzip
-        
+            
     - name: Install Latest Chrome for Testing and ChromeDriver
       run: |
         sudo apt-get update
         sudo apt-get install -y wget unzip jq
-        
         # Получаем последнюю стабильную версию через официальное API
         LATEST_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json" | jq -r '.channels.Stable.version')
-        
         echo "Устанавливаем Chrome for Testing версии: $LATEST_VERSION"
-        
         # Устанавливаем Chrome for Testing
         wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$LATEST_VERSION/linux64/chrome-linux64.zip"
         unzip -q chrome-linux64.zip -d chrome-for-testing
         sudo mv chrome-for-testing/chrome-linux64 /opt/chrome-for-testing
         sudo ln -sf /opt/chrome-for-testing/chrome /usr/local/bin/chrome-for-testing
-        
         # Устанавливаем соответствующий ChromeDriver
         wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$LATEST_VERSION/linux64/chromedriver-linux64.zip"
         unzip -q chromedriver-linux64.zip -d chromedriver
         sudo mv chromedriver/chromedriver-linux64/chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
-        
         # Очистка временных файлов
         rm -rf chrome-linux64.zip chrome-for-testing chromedriver-linux64.zip chromedriver
-        
-    - name: Verify installations
-      run: |
-        echo "=== Chrome for Testing ==="
-        /opt/chrome-for-testing/chrome --version
-        echo "=== ChromeDriver ==="
-        chromedriver --version
-        echo "=== ChromeDriver Path ==="
-        which chromedriver
-        
+                
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
